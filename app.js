@@ -19,6 +19,8 @@ var globals =
   , models : {}
   , request : require('request')
   , console :console
+  , timers : {}
+  , clearTimeout : clearTimeout
   }
 
 globals.db.on('error', console.error.bind(console, 'connection error:'));
@@ -43,9 +45,9 @@ app.configure(function(){
 require('./boot')(globals)
 
 var listLength = 0
-  , MAX_LIST = 10 * 24 * 14 // save 14 day of 24 hours with 10 beats per hour
+  , MAX_LIST = config.grabLimit // save 14 day of 24 hours with 10 beats per hour
 
-var getData = function(){
+globals.timers.grabFunction = function(){
   globals.request.get(
   {uri: config.url
   }
@@ -68,11 +70,11 @@ var getData = function(){
       })
     }
   )
-  setTimeout(getData,10*60*60) // every hour
+  globals.timers.grab = setTimeout(globals.timers.grabFunction,config.grabbinTime) // every hour
 }
-getData()
+globals.timers.grabFunction()
 
-var beat = function(){
+globals.timers.beatFunction = function(){
   console.log('send HB req @ ' + new Date)
   var url = globals.util.format(config.beater,encodeURIComponent(config.orign + '/beat/'))
   console.log('Url: ' + url)
@@ -81,11 +83,11 @@ var beat = function(){
   }
   , function (err, response, content) {
       var time = new Date
-      setTimeout(beat,10*60*5)
+      globals.timers.beat = setTimeout(globals.timers.beatFunction,config.beatinTime)
     }
   )
 }
-beat()
+globals.timers.beatFunction()
 
 if (!module.parent) {
   var port = process.env.PORT || config.port
