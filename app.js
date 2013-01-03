@@ -43,7 +43,7 @@ app.configure(function(){
 require('./boot')(globals)
 
 var listLength = 0
-  , MAX_LIST = 24 * 60 // save 24 hours only
+  , MAX_LIST = 10 * 24 * 14 // save 14 day of 24 hours with 10 beats per hour
 
 var getData = function(){
   globals.request.get(
@@ -68,14 +68,16 @@ var getData = function(){
       })
     }
   )
-  setTimeout(getData,1000*60)
-}//every minute
+  setTimeout(getData,10*60*60) // every hour
+}
 getData()
 
 var beat = function(){
   console.log('send HB req @ ' + new Date)
+  var url = globals.util.format(config.beater,encodeURIComponent(config.orign + '/beat/'))
+  console.log('Url: ' + url)
   globals.request.get(
-  {uri: globals.util.format(config.beater,encodeURIComponent(config.orign + '/beat/'))
+  {uri: url
   }
   , function (err, response, content) {
       var time = new Date
