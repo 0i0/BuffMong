@@ -5,6 +5,7 @@ app.get('/squirt/:from/:to', function(req, res){
   to = parseInt(to)
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header('Content-Type', 'application/json' );
   models.Cache.find({},function (err, cahce) {
       if (err) console.log(err)
       var filter = []
@@ -20,6 +21,7 @@ app.get('/squirt/:from/:to', function(req, res){
 app.get('/squirt/', function(req, res){
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header('Content-Type', 'application/json' );
   models.Cache.find({},function (err, cahce) {
       if (err) console.log(err)
       res.write(JSON.stringify(cahce))
