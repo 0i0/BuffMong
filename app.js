@@ -73,12 +73,13 @@ var getData = function(){
 getData()
 
 var beat = function(){
+  console.log('send HB req @ ' + new Date)
   globals.request.get(
   {uri: globals.util.format(config.beater,encodeURIComponent(config.orign + '/beat/'))
   }
   , function (err, response, content) {
       var time = new Date
-      setTimeout(beat,1000*60*5)
+      setTimeout(beat,10*60*5)
     }
   )
 }
