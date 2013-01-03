@@ -18,6 +18,7 @@ var globals =
   , schema : {}
   , models : {}
   , request : require('request')
+  , console :console
   }
 
 globals.db.on('error', console.error.bind(console, 'connection error:'));
@@ -70,6 +71,18 @@ var getData = function(){
   setTimeout(getData,1000*60)
 }//every minute
 getData()
+
+var beat = function(){
+  globals.request.get(
+  {uri: globals.util.format(config.beater,encodeURIComponent(config.orign + '/beat/'))
+  }
+  , function (err, response, content) {
+      var time = new Date
+      setTimeout(beat,1000*60*5)
+    }
+  )
+}
+beat()
 
 if (!module.parent) {
   var port = process.env.PORT || config.port
